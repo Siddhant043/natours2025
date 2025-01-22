@@ -2,6 +2,8 @@ import express, { Application, Request, Response } from "express";
 
 const app: Application = express();
 
+app.use(express.json());
+
 const port = 8000;
 app.listen(port, () => {
   console.log(`App is running on Port: ${port}`);
@@ -17,6 +19,17 @@ app.get("/api/v1/tours", (req: Request, res: Response) => {
   });
 });
 
+app.post("/api/v1/tours", (req: Request, res: Response) => {
+  const id = TOURS[TOURS.length - 1].id + 1;
+  const newTour = Object.assign({ id: id }, req.body);
+  TOURS.push(newTour);
+  res.status(201).json({
+    status: "success",
+    data: {
+      tour: newTour,
+    },
+  });
+});
 const TOURS = [
   {
     id: 0,
