@@ -1,7 +1,9 @@
 import express, { Application, NextFunction, Request, Response } from "express";
+import morgan from "morgan";
 
 const app: Application = express();
 
+app.use(morgan("dev"));
 app.use(express.json());
 
 app.use((_req: Request, _res: Response, next: NextFunction) => {
