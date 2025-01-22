@@ -19,18 +19,6 @@ app.get("/api/v1/tours", (req: Request, res: Response) => {
   });
 });
 
-app.post("/api/v1/tours", (req: Request, res: Response) => {
-  const id = TOURS[TOURS.length - 1].id + 1;
-  const newTour = Object.assign({ id: id }, req.body);
-  TOURS.push(newTour);
-  res.status(201).json({
-    status: "success",
-    data: {
-      tour: newTour,
-    },
-  });
-});
-
 app.get("/api/v1/tours/:id", (req: Request, res: Response) => {
   const id: number = Number(req.params.id);
   const tour = TOURS.find((tour) => tour.id === id);
@@ -49,7 +37,41 @@ app.get("/api/v1/tours/:id", (req: Request, res: Response) => {
   });
 });
 
-const TOURS = [
+app.post("/api/v1/tours", (req: Request, res: Response) => {
+  const id = TOURS[TOURS.length - 1].id + 1;
+  const newTour = Object.assign({ id: id }, req.body);
+  TOURS.push(newTour);
+  res.status(201).json({
+    status: "success",
+    data: {
+      tour: newTour,
+    },
+  });
+});
+
+app.patch("/api/v1/tours/:id", (req: Request, res: Response) => {
+  const id: number = Number(req.params.id);
+  const tour = TOURS.find((tour) => tour.id === id);
+
+  if (!tour) {
+    res.status(404).json({
+      status: "failed",
+      message: "Invalid ID",
+    });
+  }
+  const newTourData = req.body;
+  const updatedTour = { ...tour, ...newTourData };
+  TOURS = TOURS.filter((tour) => tour.id !== id);
+  TOURS.push(updatedTour);
+  res.status(203).json({
+    status: "success",
+    data: {
+      tour: updatedTour,
+    },
+  });
+});
+
+let TOURS = [
   {
     id: 0,
     name: "The Forest Hiker",
