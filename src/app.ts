@@ -1,15 +1,15 @@
-import express, { Application, Request, Response } from "express";
+import express, { Application, NextFunction, Request, Response } from "express";
 
 const app: Application = express();
 
 app.use(express.json());
 
-const port = 8000;
-app.listen(port, () => {
-  console.log(`App is running on Port: ${port}`);
+app.use((_req: Request, _res: Response, next: NextFunction) => {
+  console.log("Hello from middleware. 👋");
+  next();
 });
 
-const getAllTours = (req: Request, res: Response) => {
+const getAllTours = (_req: Request, res: Response) => {
   res.status(200).json({
     status: "success",
     results: TOURS.length,
@@ -94,6 +94,11 @@ app
   .get(getTour)
   .patch(updateTour)
   .delete(deleteTour);
+
+const port = 8000;
+app.listen(port, () => {
+  console.log(`App is running on Port: ${port}`);
+});
 
 let TOURS = [
   {
