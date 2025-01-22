@@ -71,6 +71,23 @@ app.patch("/api/v1/tours/:id", (req: Request, res: Response) => {
   });
 });
 
+app.delete("/api/v1/tours/:id", (req: Request, res: Response) => {
+  const tourId = Number(req.params);
+  if (tourId > TOURS.length) {
+    res.status(404).json({
+      status: "failed",
+      message: "Tour not found",
+    });
+  }
+
+  TOURS = TOURS.filter((tour) => tour.id !== tourId);
+
+  res.status(204).json({
+    status: "success",
+    data: null,
+  });
+});
+
 let TOURS = [
   {
     id: 0,
