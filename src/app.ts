@@ -9,7 +9,7 @@ app.listen(port, () => {
   console.log(`App is running on Port: ${port}`);
 });
 
-app.get("/api/v1/tours", (req: Request, res: Response) => {
+const getAllTours = (req: Request, res: Response) => {
   res.status(200).json({
     status: "success",
     results: TOURS.length,
@@ -17,9 +17,9 @@ app.get("/api/v1/tours", (req: Request, res: Response) => {
       tours: TOURS,
     },
   });
-});
+};
 
-app.get("/api/v1/tours/:id", (req: Request, res: Response) => {
+const getTour = (req: Request, res: Response) => {
   const id: number = Number(req.params.id);
   const tour = TOURS.find((tour) => tour.id === id);
   if (!tour) {
@@ -35,9 +35,9 @@ app.get("/api/v1/tours/:id", (req: Request, res: Response) => {
       tour,
     },
   });
-});
+};
 
-app.post("/api/v1/tours", (req: Request, res: Response) => {
+const createTour = (req: Request, res: Response) => {
   const id = TOURS[TOURS.length - 1].id + 1;
   const newTour = Object.assign({ id: id }, req.body);
   TOURS.push(newTour);
@@ -47,9 +47,9 @@ app.post("/api/v1/tours", (req: Request, res: Response) => {
       tour: newTour,
     },
   });
-});
+};
 
-app.patch("/api/v1/tours/:id", (req: Request, res: Response) => {
+const updateTour = (req: Request, res: Response) => {
   const id: number = Number(req.params.id);
   const tour = TOURS.find((tour) => tour.id === id);
 
@@ -69,9 +69,9 @@ app.patch("/api/v1/tours/:id", (req: Request, res: Response) => {
       tour: updatedTour,
     },
   });
-});
+};
 
-app.delete("/api/v1/tours/:id", (req: Request, res: Response) => {
+const deleteTour = (req: Request, res: Response) => {
   const tourId = Number(req.params);
   if (tourId > TOURS.length) {
     res.status(404).json({
@@ -86,7 +86,14 @@ app.delete("/api/v1/tours/:id", (req: Request, res: Response) => {
     status: "success",
     data: null,
   });
-});
+};
+
+app.route("/api/v1/tours").get(getAllTours).post(createTour);
+app
+  .route("/api/v1/tours/:id")
+  .get(getTour)
+  .patch(updateTour)
+  .delete(deleteTour);
 
 let TOURS = [
   {
