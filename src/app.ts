@@ -5,7 +5,9 @@ import userRouter from "./routes/userRoutes.js";
 
 const app: Application = express();
 
-app.use(morgan("dev"));
+if (process.env.NODE_ENV === "development") {
+  app.use(morgan("dev"));
+}
 app.use(express.json());
 
 app.use((_req: Request, _res: Response, next: NextFunction) => {
