@@ -16,6 +16,17 @@ const checkId = (
   next();
 };
 
+const checkBody = (req: Request, res: Response, next: NextFunction): void => {
+  if (!req.body.name || !req.body.price) {
+    res.status(400).json({
+      status: "failed",
+      message: "A Tour must have a name and a price",
+    });
+    return;
+  }
+  next();
+};
+
 const getAllTours = (_req: Request, res: Response) => {
   res.status(200).json({
     status: "success",
@@ -72,4 +83,12 @@ const deleteTour = (req: Request, res: Response) => {
   });
 };
 
-export { getAllTours, getTour, createTour, updateTour, deleteTour, checkId };
+export {
+  getAllTours,
+  getTour,
+  createTour,
+  updateTour,
+  deleteTour,
+  checkId,
+  checkBody,
+};
