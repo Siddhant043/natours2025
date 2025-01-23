@@ -1,5 +1,20 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { TOURS } from "../app.js";
+
+const checkId = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+  val: String
+) => {
+  if (Number(val) > TOURS.length) {
+    return res.status(404).json({
+      status: "failed",
+      message: "Tour not found",
+    });
+  }
+  next();
+};
 
 const getAllTours = (_req: Request, res: Response) => {
   res.status(200).json({
@@ -14,12 +29,6 @@ const getAllTours = (_req: Request, res: Response) => {
 const getTour = (req: Request, res: Response) => {
   const id: number = Number(req.params.id);
   const tour = TOURS.find((tour) => tour.id === id);
-  if (!tour) {
-    res.status(404).json({
-      status: "failed",
-      message: "Invalid ID",
-    });
-  }
 
   res.status(201).json({
     status: "success",
@@ -44,13 +53,6 @@ const createTour = (req: Request, res: Response) => {
 const updateTour = (req: Request, res: Response) => {
   const id: number = Number(req.params.id);
   const tour = TOURS.find((tour) => tour.id === id);
-
-  if (!tour) {
-    res.status(404).json({
-      status: "failed",
-      message: "Invalid ID",
-    });
-  }
   const newTourData = req.body;
   const updatedTour = { ...tour, ...newTourData };
   TOURS.push(updatedTour);
@@ -64,17 +66,10 @@ const updateTour = (req: Request, res: Response) => {
 
 const deleteTour = (req: Request, res: Response) => {
   const tourId = Number(req.params);
-  if (tourId > TOURS.length) {
-    res.status(404).json({
-      status: "failed",
-      message: "Tour not found",
-    });
-  }
-
   res.status(204).json({
     status: "success",
     data: null,
   });
 };
 
-export { getAllTours, getTour, createTour, updateTour, deleteTour };
+export { getAllTours, getTour, createTour, updateTour, deleteTour, checkId };
