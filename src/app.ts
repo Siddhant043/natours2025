@@ -16,10 +16,7 @@ app.use((_req: Request, _res: Response, next: NextFunction) => {
 app.use("/api/v1/tours", tourRouter);
 app.use("/api/v1/users", userRouter);
 
-const port = 8000;
-app.listen(port, () => {
-  console.log(`App is running on Port: ${port}`);
-});
+export default app;
 
 export let TOURS = [
   {

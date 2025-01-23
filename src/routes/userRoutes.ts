@@ -1,41 +1,13 @@
-import express, { Request, Response } from "express";
+import express from "express";
+import {
+  createUser,
+  deleteUser,
+  getAllUsers,
+  getUser,
+  updateUser,
+} from "../controllers/userController.js";
 
 const userRouter = express.Router();
-
-const getAllUsers = (req: Request, res: Response) => {
-  res.status(500).json({
-    status: "failed",
-    message: "Route is not defined",
-  });
-};
-
-const createUser = (req: Request, res: Response) => {
-  res.status(500).json({
-    status: "failed",
-    message: "Route is not defined",
-  });
-};
-
-const getUser = (req: Request, res: Response) => {
-  res.status(500).json({
-    status: "failed",
-    message: "Route is not defined",
-  });
-};
-
-const updateUser = (req: Request, res: Response) => {
-  res.status(500).json({
-    status: "failed",
-    message: "Route is not defined",
-  });
-};
-
-const deleteUser = (req: Request, res: Response) => {
-  res.status(500).json({
-    status: "failed",
-    message: "Route is not defined",
-  });
-};
 
 userRouter.route("/").get(getAllUsers).post(createUser);
 
