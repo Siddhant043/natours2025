@@ -90,12 +90,55 @@ const deleteTour = (req: Request, res: Response) => {
   });
 };
 
+const getAllUsers = (req: Request, res: Response) => {
+  res.status(500).json({
+    status: "failed",
+    message: "Route is not defined",
+  });
+};
+
+const createUser = (req: Request, res: Response) => {
+  res.status(500).json({
+    status: "failed",
+    message: "Route is not defined",
+  });
+};
+
+const getUser = (req: Request, res: Response) => {
+  res.status(500).json({
+    status: "failed",
+    message: "Route is not defined",
+  });
+};
+
+const updateUser = (req: Request, res: Response) => {
+  res.status(500).json({
+    status: "failed",
+    message: "Route is not defined",
+  });
+};
+
+const deleteUser = (req: Request, res: Response) => {
+  res.status(500).json({
+    status: "failed",
+    message: "Route is not defined",
+  });
+};
+
 app.route("/api/v1/tours").get(getAllTours).post(createTour);
 app
   .route("/api/v1/tours/:id")
   .get(getTour)
   .patch(updateTour)
   .delete(deleteTour);
+
+app.route("/api/v1/users").get(getAllUsers).post(createUser);
+
+app
+  .route("/api/v1/users/:id")
+  .get(getUser)
+  .patch(updateUser)
+  .delete(deleteUser);
 
 const port = 8000;
 app.listen(port, () => {
