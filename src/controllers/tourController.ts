@@ -1,94 +1,49 @@
-import { NextFunction, Request, Response } from "express";
-import { TOURS } from "../app.js";
-
-const checkId = (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-  val: String
-) => {
-  if (Number(val) > TOURS.length) {
-    return res.status(404).json({
-      status: "failed",
-      message: "Tour not found",
-    });
-  }
-  next();
-};
-
-const checkBody = (req: Request, res: Response, next: NextFunction): void => {
-  if (!req.body.name || !req.body.price) {
-    res.status(400).json({
-      status: "failed",
-      message: "A Tour must have a name and a price",
-    });
-    return;
-  }
-  next();
-};
+import { Request, Response } from "express";
+import Tour from "../models/tourModel.js";
 
 const getAllTours = (_req: Request, res: Response) => {
-  res.status(200).json({
-    status: "success",
-    results: TOURS.length,
-    data: {
-      tours: TOURS,
-    },
+  res.status(500).json({
+    status: "failed",
+    message: "Route is not defined",
   });
 };
 
 const getTour = (req: Request, res: Response) => {
-  const id: number = Number(req.params.id);
-  const tour = TOURS.find((tour) => tour.id === id);
-
-  res.status(201).json({
-    status: "success",
-    data: {
-      tour,
-    },
+  res.status(500).json({
+    status: "failed",
+    message: "Route is not defined",
   });
 };
 
-const createTour = (req: Request, res: Response) => {
-  const id = TOURS[TOURS.length - 1].id + 1;
-  const newTour = Object.assign({ id: id }, req.body);
-  TOURS.push(newTour);
-  res.status(201).json({
-    status: "success",
-    data: {
-      tour: newTour,
-    },
-  });
+const createTour = async (req: Request, res: Response) => {
+  try {
+    const tour = await Tour.create(req.body);
+    res.status(201).json({
+      status: "success",
+      data: {
+        tour,
+      },
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: "failed",
+      message: "A Tour must have a name and price",
+    });
+  }
 };
 
 const updateTour = (req: Request, res: Response) => {
-  const id: number = Number(req.params.id);
-  const tour = TOURS.find((tour) => tour.id === id);
-  const newTourData = req.body;
-  const updatedTour = { ...tour, ...newTourData };
-  TOURS.push(updatedTour);
-  res.status(203).json({
-    status: "success",
-    data: {
-      tour: updatedTour,
-    },
+  res.status(500).json({
+    status: "failed",
+    message: "Route is not defined",
   });
 };
 
 const deleteTour = (req: Request, res: Response) => {
-  const tourId = Number(req.params);
-  res.status(204).json({
-    status: "success",
-    data: null,
+  res.status(500).json({
+    status: "failed",
+    message: "Route is not defined",
   });
 };
 
-export {
-  getAllTours,
-  getTour,
-  createTour,
-  updateTour,
-  deleteTour,
-  checkId,
-  checkBody,
-};
+export { getAllTours, getTour, createTour, updateTour, deleteTour };
