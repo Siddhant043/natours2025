@@ -1,9 +1,15 @@
 import { Request, Response } from "express";
 import Tour from "../models/tourModel.js";
 
-const getAllTours = async (_req: Request, res: Response) => {
+const getAllTours = async (req: Request, res: Response) => {
   try {
-    const tours = await Tour.find();
+    const queryObj = { ...req.query };
+    const excludedFields = ["page", "sort", "limit", "fields"];
+    excludedFields.forEach((el) => delete queryObj[el]);
+
+    const query = Tour.find(queryObj);
+    const tours = await query;
+
     res.status(200).json({
       status: "success",
       results: tours.length,
@@ -48,7 +54,7 @@ const createTour = async (req: Request, res: Response) => {
   } catch (error) {
     res.status(400).json({
       status: "failed",
-      message: "A Tour must have a name and price",
+      message: error,
     });
   }
 };
