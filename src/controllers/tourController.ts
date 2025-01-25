@@ -15,8 +15,15 @@ const getAllTours = async (req: Request, res: Response) => {
       (matchedStr) => `$${matchedStr}`
     );
     const parsedQuery = JSON.parse(queryStr);
+    let query = Tour.find(parsedQuery);
 
-    const query = Tour.find(parsedQuery);
+    // Sorting
+    if (req.query.sort) {
+      const sortStr = req.query.sort.toString();
+      const updatedSortStr = sortStr.split(",").join(" ");
+      query = query.sort(updatedSortStr);
+    }
+
     const tours = await query;
 
     res.status(200).json({
