@@ -24,6 +24,15 @@ const getAllTours = async (req: Request, res: Response) => {
       query = query.sort(updatedSortStr);
     }
 
+    // Field Limiting
+    if (req.query.fields) {
+      const fieldStr = req.query.fields.toString();
+      const updatedFieldStr = fieldStr.split(",").join(" ");
+      query = query.select(updatedFieldStr);
+    } else {
+      query = query.select("-__v");
+    }
+
     const tours = await query;
 
     res.status(200).json({
