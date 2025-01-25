@@ -1,11 +1,22 @@
 import { Request, Response } from "express";
 import Tour from "../models/tourModel.js";
 
-const getAllTours = (_req: Request, res: Response) => {
-  res.status(500).json({
-    status: "failed",
-    message: "Route is not defined",
-  });
+const getAllTours = async (_req: Request, res: Response) => {
+  try {
+    const tours = await Tour.find();
+    res.status(200).json({
+      status: "success",
+      results: tours.length,
+      data: {
+        tours,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: "failed",
+      message: "Unable to find tours",
+    });
+  }
 };
 
 const getTour = (req: Request, res: Response) => {
