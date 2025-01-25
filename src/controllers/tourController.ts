@@ -19,11 +19,21 @@ const getAllTours = async (_req: Request, res: Response) => {
   }
 };
 
-const getTour = (req: Request, res: Response) => {
-  res.status(500).json({
-    status: "failed",
-    message: "Route is not defined",
-  });
+const getTour = async (req: Request, res: Response) => {
+  try {
+    const tour = await Tour.findById(req.params.id);
+    res.status(200).json({
+      status: "success",
+      data: {
+        tour,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: "failed",
+      message: "Unable to find tour",
+    });
+  }
 };
 
 const createTour = async (req: Request, res: Response) => {
