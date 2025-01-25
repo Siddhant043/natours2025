@@ -53,11 +53,25 @@ const createTour = async (req: Request, res: Response) => {
   }
 };
 
-const updateTour = (req: Request, res: Response) => {
-  res.status(500).json({
-    status: "failed",
-    message: "Route is not defined",
-  });
+const updateTour = async (req: Request, res: Response) => {
+  try {
+    const id = req.params.id;
+    const tour = await Tour.findByIdAndUpdate(id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+    res.status(200).json({
+      status: "success",
+      data: {
+        tour,
+      },
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: "failed",
+      message: "Unable to update the Tour",
+    });
+  }
 };
 
 const deleteTour = (req: Request, res: Response) => {
