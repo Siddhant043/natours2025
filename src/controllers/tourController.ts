@@ -1,5 +1,12 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import Tour from "../models/tourModel.js";
+
+const aliasTopTours = (req: Request, _res: Response, next: NextFunction) => {
+  req.query.limit = "5";
+  req.query.sort = "-ratingsAverage,price";
+  req.query.fields = "name,price,ratingsAverage,difficulty,summary";
+  next();
+};
 
 const getAllTours = async (req: Request, res: Response) => {
   try {
@@ -135,4 +142,11 @@ const deleteTour = async (req: Request, res: Response) => {
   }
 };
 
-export { getAllTours, getTour, createTour, updateTour, deleteTour };
+export {
+  getAllTours,
+  getTour,
+  createTour,
+  updateTour,
+  deleteTour,
+  aliasTopTours,
+};
