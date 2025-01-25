@@ -74,11 +74,19 @@ const updateTour = async (req: Request, res: Response) => {
   }
 };
 
-const deleteTour = (req: Request, res: Response) => {
-  res.status(500).json({
-    status: "failed",
-    message: "Route is not defined",
-  });
+const deleteTour = async (req: Request, res: Response) => {
+  try {
+    await Tour.findByIdAndDelete(req.params.id);
+    res.status(204).json({
+      status: "success",
+      data: null,
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: "failed",
+      message: "Route is not defined",
+    });
+  }
 };
 
 export { getAllTours, getTour, createTour, updateTour, deleteTour };
