@@ -1,5 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 import { TourConfig } from "./types.js";
+import slugify from "../utils/slugify.js";
 
 const tourSchema: Schema<TourConfig> = new Schema(
   {
@@ -7,6 +8,9 @@ const tourSchema: Schema<TourConfig> = new Schema(
       type: String,
       required: [true, "A Tour must have a name"],
       unique: true,
+    },
+    slug: {
+      type: String,
     },
     duration: {
       type: Number,
@@ -67,6 +71,11 @@ const tourSchema: Schema<TourConfig> = new Schema(
 
 tourSchema.virtual("durationWeeks").get(function () {
   return Number(this.duration) / 7;
+});
+
+tourSchema.pre<TourConfig>("save", function (next) {
+  this.slug = slugify(this.name.toLowerCase());
+  next();
 });
 
 const Tour = mongoose.model<TourConfig>("Tour", tourSchema);
