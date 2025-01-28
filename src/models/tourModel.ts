@@ -86,6 +86,15 @@ tourSchema.pre<TourConfig>(/^find/, function (next) {
   next;
 });
 
+// Aggregation Middleware
+tourSchema.pre(
+  "aggregate",
+  function (this: mongoose.Aggregate<any>, next: Function) {
+    this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
+    next();
+  }
+);
+
 const Tour = mongoose.model<TourConfig>("Tour", tourSchema);
 
 export default Tour;
