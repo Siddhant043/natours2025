@@ -16,4 +16,5 @@ export type TourConfig = {
   images?: [String];
   createdAt: Date;
   startDates: [Date];
+  secretTour?: Boolean;
 } & Document;

@@ -69,13 +69,21 @@ const tourSchema: Schema<TourConfig> = new Schema(
   }
 );
 
+// Virtual Properties
 tourSchema.virtual("durationWeeks").get(function () {
   return Number(this.duration) / 7;
 });
 
+// Document middleware
 tourSchema.pre<TourConfig>("save", function (next) {
   this.slug = slugify(this.name.toLowerCase());
   next();
+});
+
+// Query middleware
+tourSchema.pre<TourConfig>(/^find/, function (next) {
+  this.secretTour = true;
+  next;
 });
 
 const Tour = mongoose.model<TourConfig>("Tour", tourSchema);
