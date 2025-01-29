@@ -1,6 +1,7 @@
 import mongoose, { Schema } from "mongoose";
 import { TourConfig } from "./types.js";
 import slugify from "../utils/slugify.js";
+import validator from "validator";
 
 const tourSchema: Schema<TourConfig> = new Schema(
   {
@@ -8,6 +9,9 @@ const tourSchema: Schema<TourConfig> = new Schema(
       type: String,
       required: [true, "A Tour must have a name"],
       unique: true,
+      minlength: [10, "A Tour name must have more that equal to 10 characters"],
+      maxlength: [40, "A Tour name must have less that equal to 40 characters"],
+      // validate: [validator.isAlpha, "Tour name must only contains characters"],
     },
     slug: {
       type: String,
@@ -23,10 +27,16 @@ const tourSchema: Schema<TourConfig> = new Schema(
     difficulty: {
       type: String,
       required: [true, "A Tour must have a difficulty"],
+      emun: {
+        values: ["easy", "medium", "difficult"],
+        message: "Difficulty is either: easy, medium or hard",
+      },
     },
     ratingsAverage: {
       type: Number,
       default: 4.5,
+      min: [1, "Rating must be above 1"],
+      max: [5, "Rating must be below 5"],
     },
     ratingsQuantity: {
       type: Number,
@@ -38,6 +48,13 @@ const tourSchema: Schema<TourConfig> = new Schema(
     },
     priceDiscount: {
       type: Number,
+      validate: {
+        validator: function (val) {
+          //this is only accessible in current doc on new doc creation, not on update
+          return val < this.price;
+        },
+        message: "Discount price ({VALUE}) should be below the regular price",
+      },
     },
     summary: {
       type: String,
@@ -74,7 +91,7 @@ tourSchema.virtual("durationWeeks").get(function () {
   return Number(this.duration) / 7;
 });
 
-// Document middleware
+// Document middleware (only runs for save and create and not for update)
 tourSchema.pre<TourConfig>("save", function (next) {
   this.slug = slugify(this.name.toLowerCase());
   next();
