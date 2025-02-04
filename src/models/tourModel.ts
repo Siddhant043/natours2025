@@ -100,7 +100,7 @@ tourSchema.pre<TourConfig>("save", function (next) {
 // Query middleware
 tourSchema.pre<TourConfig>(/^find/, function (next) {
   this.secretTour = true;
-  next;
+  next();
 });
 
 // Aggregation Middleware
