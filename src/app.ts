@@ -2,7 +2,8 @@ import express, { Application, NextFunction, Request, Response } from "express";
 import morgan from "morgan";
 import tourRouter from "./routes/tourRoutes.js";
 import userRouter from "./routes/userRoutes.js";
-import { AppError } from "./types/errors.js";
+import AppError from "./utils/appError.js";
+import globalErrorHandler from "./controllers/errorController.js";
 
 const app: Application = express();
 
@@ -20,22 +21,9 @@ app.use("/api/v1/tours", tourRouter);
 app.use("/api/v1/users", userRouter);
 
 app.all("*", (req, res, next) => {
-  const error: AppError = new Error(
-    `Can't find ${req.originalUrl} on the server!`
-  );
-  error.status = "fail";
-  error.statusCode = 404;
-  next(error);
+  next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
 });
 
-app.use((err: AppError, req: Request, res: Response, next: NextFunction) => {
-  err.statusCode = err.statusCode || 500;
-  err.status = err.status || "error";
-
-  res.status(err.statusCode).json({
-    status: err.status,
-    message: err.message,
-  });
-});
+app.use(globalErrorHandler);
 
 export default app;
