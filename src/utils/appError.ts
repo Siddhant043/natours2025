@@ -4,6 +4,8 @@ class AppError extends Error {
   isOperational: boolean;
   path?: string;
   value?: any;
+  code?: number;
+  errorResponse?: any;
 
   constructor(message: string, statusCode: number) {
     super(message);
@@ -12,7 +14,11 @@ class AppError extends Error {
     this.status = statusCode.toString().startsWith("4") ? "fail" : "error";
     this.isOperational = true;
 
-    Error.captureStackTrace(this, this.constructor);
+    // Capture stack trace (Node.js only)
+    if (typeof Error.captureStackTrace === "function") {
+      Error.captureStackTrace(this, this.constructor);
+    }
   }
 }
+
 export default AppError;
