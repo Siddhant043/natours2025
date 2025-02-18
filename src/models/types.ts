@@ -18,3 +18,11 @@ export type TourConfig = {
   startDates: [Date];
   secretTour?: Boolean;
 } & Document;
+
+export type UserConfig = {
+  name: String
+  email: String
+  photo: String
+  password: String
+  passwordConfirm: String
+}
