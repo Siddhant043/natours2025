@@ -6,6 +6,7 @@ class AppError extends Error {
   value?: any;
   code?: number;
   errorResponse?: any;
+  errors?: any;
 
   constructor(message: string, statusCode: number) {
     super(message);
