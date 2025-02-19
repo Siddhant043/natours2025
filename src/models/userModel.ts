@@ -1,6 +1,7 @@
 import { model, Schema } from "mongoose";
 import { UserConfig } from "./types.js";
-import { isEmail } from "validator";
+import pkg from 'validator';
+const { isEmail } = pkg;
 
 const userSchema: Schema<UserConfig> = new Schema({
     name: {
