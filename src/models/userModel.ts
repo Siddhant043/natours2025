@@ -17,7 +17,6 @@ const userSchema: Schema<UserConfig> = new Schema({
     },
     photo: {
         type: String,
-        required: [true, "Photo is a required field"]
     },
     password: {
         type: String,
