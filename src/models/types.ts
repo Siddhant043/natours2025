@@ -22,7 +22,7 @@ export type TourConfig = {
 export type UserConfig = {
   name: String
   email: String
-  photo: String
+  photo?: String
   password: String
   passwordConfirm: String
 }
