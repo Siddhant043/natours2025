@@ -10,19 +10,19 @@ export type TourConfig = {
   ratingsQuantity?: Number;
   price: Number;
   priceDiscount?: Number;
-  summary: String;
-  description?: String;
-  imageCover: String;
-  images?: [String];
+  summary: string;
+  description?: string;
+  imageCover: string;
+  images?: [string];
   createdAt: Date;
   startDates: [Date];
   secretTour?: Boolean;
 } & Document;
 
 export type UserConfig = {
-  name: String
-  email: String
-  photo?: String
-  password: String
-  passwordConfirm: String
-}
+  name: string
+  email: string
+  photo?: string
+  password: string
+  passwordConfirm: string | undefined
+} & Document
