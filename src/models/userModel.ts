@@ -25,6 +25,7 @@ const userSchema: Schema<UserConfig> = new Schema({
         type: String,
         required: [true, "Password is a required field"],
         minlength: 8,
+        select: false
     },
     passwordConfirm: {
         type: String,
@@ -54,6 +55,10 @@ userSchema.pre<UserConfig>('save', async function (next) {
         next(err as Error); // Pass the error to the next middleware
     }
 })
+
+userSchema.methods.checkPasswords = async function (candidatePassword: string, actualPassword: string) {
+    return await bcrypt.compare(candidatePassword, actualPassword)
+}
 
 const User = model<UserConfig>("User", userSchema)
 
