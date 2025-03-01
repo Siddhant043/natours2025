@@ -37,7 +37,8 @@ const userSchema: Schema<UserConfig> = new Schema({
             },
             message: "Passwords are not the same"
         }
-    }
+    },
+    passwordChangedAt: Date
 });
 
 userSchema.pre<UserConfig>('save', async function (next) {
@@ -58,6 +59,16 @@ userSchema.pre<UserConfig>('save', async function (next) {
 
 userSchema.methods.checkPasswords = async function (candidatePassword: string, actualPassword: string) {
     return await bcrypt.compare(candidatePassword, actualPassword)
+}
+
+userSchema.methods.changedPasswordAfter = async function (JWTTimestamp: number) {
+
+    if (this.passwordChangedAt) {
+        const changeTimeInMili = parseInt(this.passwordChangedAt.getTime()) / 1000   // converting time to mili seconds
+        return changeTimeInMili > JWTTimestamp
+    }
+
+    return false
 }
 
 const User = model<UserConfig>("User", userSchema)

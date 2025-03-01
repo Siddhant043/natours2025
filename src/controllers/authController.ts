@@ -3,11 +3,11 @@ import User from '../models/userModel.js'
 import catchAsync from '../utils/catchAsync.js'
 import jwt from 'jsonwebtoken'
 import AppError from '../utils/appError.js'
+import { DecodedConfig } from '../types/auth.js'
+// import { promisify } from 'util'
 
-
+const jwtSecret = process.env.JWT_SECRET || "secret-should-be-at-least-thirty-two-characters-long"
 const signToken = (id: string) => {
-    const jwtSecret = process.env.JWT_SECRET || "secret-should-be-at-least-thirty-two-characters-long"
-
     const token = jwt.sign({ id }, jwtSecret, { expiresIn: "90d" })
     return token
 }
@@ -54,3 +54,36 @@ export const login = catchAsync(async (req: Request, res: Response, next: NextFu
         token
     })
 })
+
+export const protect = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    // 1. Checking the existence of the token in req
+    let token;
+    if (req.headers.authorization && req.headers.authorization?.startsWith("Bearer")) {
+        token = req.headers.authorization.split(" ")[1]
+    }
+    if (!token) {
+        return next(new AppError("You are not logged in. Please login to get access", 401))
+    }
+
+    // 2. Verification of the token
+    const decoded: DecodedConfig = await new Promise((resolve, reject) => {
+        jwt.verify(token, jwtSecret, (err: any, decodedToken: any) => {
+            if (err) reject(err);
+            else resolve(decodedToken);
+        });
+    });
+
+    // 3. Check if user still exists
+    const currentUser = decoded && await User.findById(decoded.id)
+    if (!currentUser) {
+        return next(new AppError("User does not exist", 404))
+    }
+
+    // 4. Check if user changed password after the token was issued
+    if (currentUser.changedPasswordAfter(decoded.iat)) {
+        return next(new AppError("User recently updated password. Please login again.", 401))
+    }
+
+    //req.user = currentUser;
+    next()
+});

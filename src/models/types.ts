@@ -27,4 +27,6 @@ export type UserConfig = {
   password: string
   passwordConfirm: string | undefined
   checkPasswords: Function
+  passwordChangedAt: Date
+  changedPasswordAfter: Function
 } & Document
