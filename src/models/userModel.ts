@@ -61,13 +61,11 @@ userSchema.methods.checkPasswords = async function (candidatePassword: string, a
     return await bcrypt.compare(candidatePassword, actualPassword)
 }
 
-userSchema.methods.changedPasswordAfter = async function (JWTTimestamp: number) {
-
+userSchema.methods.changedPasswordAfter = function (JWTTimestamp: number) {
     if (this.passwordChangedAt) {
-        const changeTimeInMili = parseInt(this.passwordChangedAt.getTime()) / 1000   // converting time to mili seconds
+        const changeTimeInMili = parseInt(this.passwordChangedAt.getTime()) / 1000  // converting time to mili seconds
         return changeTimeInMili > JWTTimestamp
     }
-
     return false
 }
 
