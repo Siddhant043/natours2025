@@ -29,4 +29,5 @@ export type UserConfig = {
   checkPasswords: Function
   passwordChangedAt: Date
   changedPasswordAfter: Function
+  role: 'user' | 'guide' | 'lead-guide' | 'admin'
 } & Document

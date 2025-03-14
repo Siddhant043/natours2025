@@ -4,6 +4,7 @@ import catchAsync from '../utils/catchAsync.js'
 import jwt from 'jsonwebtoken'
 import AppError from '../utils/appError.js'
 import { DecodedConfig } from '../types/auth.js'
+import { CustomRequest } from './types.js'
 // import { promisify } from 'util'
 
 const jwtSecret = process.env.JWT_SECRET || "secret-should-be-at-least-thirty-two-characters-long"
@@ -55,7 +56,7 @@ export const login = catchAsync(async (req: Request, res: Response, next: NextFu
     })
 })
 
-export const protect = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+export const protect = catchAsync(async (req: CustomRequest, res: Response, next: NextFunction) => {
     // 1. Checking the existence of the token in req
     let token;
     if (req.headers.authorization && req.headers.authorization?.startsWith("Bearer")) {
@@ -84,6 +85,18 @@ export const protect = catchAsync(async (req: Request, res: Response, next: Next
         return next(new AppError("User recently updated password. Please login again.", 401))
     }
 
-    //req.user = currentUser;
+    req.user = currentUser;
     next()
 });
+
+export const restrictTo = (...roles: string[]) => {
+    return async (req: Request, res: Response, next: NextFunction) => {
+        const customReq = req as CustomRequest;
+
+        if (!customReq.user || !roles.includes(customReq.user.role)) {
+            return next(new AppError("You do not have permission to perform this action", 403));
+        }
+
+        next();
+    };
+}
