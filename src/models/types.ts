@@ -27,7 +27,7 @@ export type UserConfig = {
   password: string;
   passwordConfirm: string | undefined;
   checkPasswords: Function;
-  passwordChangedAt: Date;
+  passwordChangedAt: Date | number;
   changedPasswordAfter: Function;
   role: "user" | "guide" | "lead-guide" | "admin";
   passwordResetToken: string | undefined;

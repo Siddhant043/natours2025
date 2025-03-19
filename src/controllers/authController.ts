@@ -6,6 +6,7 @@ import AppError from "../utils/appError.js";
 import { DecodedConfig } from "../types/auth.js";
 import { CustomRequest } from "./types.js";
 import sendEmail from "../utils/email.js";
+import crypto from "crypto";
 // import { promisify } from 'util'
 
 const jwtSecret =
@@ -165,8 +166,39 @@ export const forgotPassword = catchAsync(
   }
 );
 
-export const resetPassword = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {};
+export const resetPassword = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    // Get user based on the token
+    const hashedToken = crypto
+      .createHash("sha256")
+      .update(req.params.token)
+      .digest("hex");
+
+    const user = await User.findOne({
+      passwordResetToken: hashedToken,
+      passwordResetExpires: { $gt: Date.now() },
+    });
+
+    // If token is not expired and the user is present, set the new password
+    if (!user) {
+      return next(new AppError("Token in invalid or has expired", 400));
+    }
+
+    user.password = req.body.password;
+    user.passwordConfirm = req.body.passwordConfirm;
+    user.passwordResetToken = undefined;
+    user.passwordResetExpires = undefined;
+
+    await user.save();
+    // Update changedPasswordAt property for the user
+
+    // Log the user in, send JWT
+
+    const token = signToken(user._id);
+
+    res.status(200).json({
+      status: "success",
+      token,
+    });
+  }
+);

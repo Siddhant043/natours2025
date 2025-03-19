@@ -64,6 +64,12 @@ userSchema.pre<UserConfig>("save", async function (next) {
   }
 });
 
+userSchema.pre<UserConfig>("save", async function (next) {
+  if (!this.isModified("password") || this.isNew) return next();
+  this.passwordChangedAt = Date.now() - 1000;
+  next();
+});
+
 userSchema.methods.checkPasswords = async function (
   candidatePassword: string,
   actualPassword: string
