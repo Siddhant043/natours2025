@@ -30,7 +30,7 @@ export type UserConfig = {
   passwordChangedAt: Date;
   changedPasswordAfter: Function;
   role: "user" | "guide" | "lead-guide" | "admin";
-  passwordResetToken: string;
-  passwordResetExpires: Date;
+  passwordResetToken: string | undefined;
+  passwordResetExpires: Date | undefined;
   createPasswordResetToken: Function;
 } & Document;
