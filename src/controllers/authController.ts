@@ -7,6 +7,7 @@ import { DecodedConfig } from "../types/auth.js";
 import { CustomRequest } from "./types.js";
 import sendEmail from "../utils/email.js";
 import crypto from "crypto";
+import { UserConfig } from "../models/types.js";
 // import { promisify } from 'util'
 
 const jwtSecret =
@@ -198,6 +199,47 @@ export const resetPassword = catchAsync(
 
     res.status(200).json({
       status: "success",
+      token,
+    });
+  }
+);
+
+export const updatePassword = catchAsync(
+  async (req: CustomRequest, res: Response, next: NextFunction) => {
+    // 1. Get user form collection
+
+    const { oldPassword, newPassword, passwordConfirm } = req.body;
+    const user: UserConfig = await User.findById(req.user._id).select(
+      "+password"
+    );
+
+    if (!oldPassword || !newPassword || !passwordConfirm) {
+      return next(new AppError("Old password is required", 400));
+    }
+
+    // 2. Check if posted password is correct
+    const isPasswordCorrect = await user.checkPasswords(
+      oldPassword,
+      user.password
+    );
+
+    if (!isPasswordCorrect) {
+      return next(new AppError("Old password is incorrect.", 403));
+    }
+
+    // 3. If so, then update
+    user.password = newPassword;
+    user.passwordConfirm = passwordConfirm;
+
+    await user.save();
+
+    // 4. Log in user, send JWT
+
+    const token = signToken(user._id);
+
+    res.status(200).json({
+      status: "success",
+      message: "Password update successfully",
       token,
     });
   }

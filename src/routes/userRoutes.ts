@@ -9,8 +9,10 @@ import {
 import {
   forgotPassword,
   login,
+  protect,
   resetPassword,
   signup,
+  updatePassword,
 } from "../controllers/authController.js";
 
 const userRouter = express.Router();
@@ -20,6 +22,7 @@ userRouter.post("/login", login);
 
 userRouter.post("/forgotPassword", forgotPassword);
 userRouter.patch("/resetPassword/:token", resetPassword);
+userRouter.patch("/updatePassword", protect, updatePassword);
 
 userRouter.route("/").get(getAllUsers).post(createUser);
 
