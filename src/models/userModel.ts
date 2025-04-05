@@ -3,6 +3,7 @@ import { UserConfig } from "./types.js";
 import pkg from "validator";
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
+import { NextFunction } from "express";
 
 const { isEmail } = pkg;
 
@@ -46,6 +47,11 @@ const userSchema: Schema<UserConfig> = new Schema({
   passwordChangedAt: Date,
   passwordResetToken: String,
   passwordResetExpires: Date,
+  active: {
+    type: Boolean,
+    default: true,
+    select: false,
+  },
 });
 
 userSchema.pre<UserConfig>("save", async function (next) {
@@ -94,6 +100,11 @@ userSchema.methods.createPasswordResetToken = function () {
   this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
   return resetToken;
 };
+
+userSchema.pre<UserConfig>(/^find/, function (next) {
+  this.find({ active: { $ne: false } });
+  next();
+});
 
 const User = model<UserConfig>("User", userSchema);
 

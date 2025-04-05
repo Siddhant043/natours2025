@@ -51,6 +51,17 @@ export const updateMe = catchAsync(
   }
 );
 
+export const deleteMe = catchAsync(
+  async (req: CustomRequest, res: Response, next: Function) => {
+    await User.findByIdAndUpdate(req.user.id, { active: false });
+
+    res.status(204).json({
+      status: "success",
+      data: null,
+    });
+  }
+);
+
 const getUser = (req: Request, res: Response) => {
   res.status(500).json({
     status: "failed",

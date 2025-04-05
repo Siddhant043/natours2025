@@ -32,5 +32,7 @@ export type UserConfig = {
   role: "user" | "guide" | "lead-guide" | "admin";
   passwordResetToken: string | undefined;
   passwordResetExpires: Date | undefined;
+  active: Boolean;
   createPasswordResetToken: Function;
+  find: Function;
 } & Document;
