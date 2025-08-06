@@ -2,29 +2,48 @@ import "dotenv/config";
 import app from "./app.js";
 import mongoose, { Error } from "mongoose";
 
-process.on('uncaughtException', (err: Error) => {
-  console.log(err.name, err.message)
-  process.exit(1)
-})
-
-const password = process.env.DB_PASSWORD || "";
-const db = process.env.DB_URL?.replace("<db_password>", password) || "";
-
-mongoose.connect(db).then((con) => {
-  console.log("DB connection successful");
+// Handle uncaught exceptions
+process.on("uncaughtException", (err: Error) => {
+  console.error("Uncaught Exception:", err.name, err.message);
+  process.exit(1);
 });
 
+// Build MongoDB connection string from environment variables
+const mongoURL = process.env.MONGO_URL || "";
+const mongoUser = process.env.MONGO_USER || "";
+const mongoPass = process.env.MONGO_PASSWORD || "";
+const mongoDB = process.env.MONGO_DB || "natours";
+
+// If auth is needed
+const mongoOptions = {
+  user: mongoUser,
+  pass: mongoPass,
+  dbName: mongoDB,
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+};
+
+// Connect to MongoDB
+mongoose
+  .connect(mongoURL, mongoOptions)
+  .then(() => {
+    console.log("MongoDB connected successfully");
+  })
+  .catch((err: Error) => {
+    console.error("MongoDB connection error:", err.message);
+    process.exit(1);
+  });
+
+// Start server
 const port = process.env.PORT || 8000;
 const server = app.listen(port, () => {
-  console.log(`App is running on Port: ${port}`);
+  console.log(`Server running on port ${port}`);
 });
 
-
-process.on('unhandledRejection', (err: Error) => {
-  console.log(err.name, err.message)
+// Handle unhandled promise rejections
+process.on("unhandledRejection", (err: Error) => {
+  console.error("Unhandled Rejection:", err.name, err.message);
   server.close(() => {
-    process.exit(1)
-  })
-})
-
-
+    process.exit(1);
+  });
+});
