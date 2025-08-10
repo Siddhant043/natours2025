@@ -1,23 +1,20 @@
 version: "3.8"
 
 services:
-  backend:
-    build: .
-    container_name: backend
-    ports:
-      - "4000:4000"
-    env_file:
-      - .env
-    environment:
-      - MONGO_URL=mongodb://mongo:27017/natours
-      - MONGO_USER=root
-      - MONGO_PASSWORD=password
-      - MONGO_DB=natours
-    depends_on:
-      - mongo
-    volumes:
-      - .:/usr/src/app
-      - /usr/src/app/node_modules
+  # backend:
+  #   build: .
+  #   container_name: backend
+  #   ports:
+  #     - "4000:4000"
+  #   env_file:
+  #     - .env
+  #   environment:
+  #     - MONGO_URL=mongodb://mongo:27017/natours
+  #   depends_on:
+  #     - mongo
+  #   volumes:
+  #     - .:/usr/src/app
+  #     - /usr/src/app/node_modules
 
   mongo:
     image: mongo:6
