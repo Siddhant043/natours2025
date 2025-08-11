@@ -1,6 +1,7 @@
 import express, { Application, NextFunction, Request, Response } from "express";
 import morgan from "morgan";
 import rateLimit from "express-rate-limit";
+import mongoSanitize from "express-mongo-sanitize";
 import helmet from "helmet";
 import tourRouter from "./routes/tourRoutes.js";
 import userRouter from "./routes/userRoutes.js";
@@ -26,6 +27,7 @@ app.use("/api", limiter);
 
 
 app.use(express.json({ limit: "10kb" })); // Limit request body size to 10kb
+app.use(mongoSanitize()); // Sanitize data against NoSQL query injection
 
 app.use((_req: Request, _res: Response, next: NextFunction) => {
   console.log("Hello from middleware. 👋");
