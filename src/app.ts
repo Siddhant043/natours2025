@@ -1,6 +1,7 @@
 import express, { Application, NextFunction, Request, Response } from "express";
 import morgan from "morgan";
 import rateLimit from "express-rate-limit";
+import helmet from "helmet";
 import tourRouter from "./routes/tourRoutes.js";
 import userRouter from "./routes/userRoutes.js";
 import AppError from "./utils/appError.js";
@@ -9,6 +10,8 @@ import globalErrorHandler from "./controllers/errorController.js";
 const app: Application = express();
 
 // global middlewares
+app.use(helmet());
+
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
 }
@@ -21,7 +24,8 @@ const limiter = rateLimit({
 
 app.use("/api", limiter);
 
-app.use(express.json());
+
+app.use(express.json({ limit: "10kb" })); // Limit request body size to 10kb
 
 app.use((_req: Request, _res: Response, next: NextFunction) => {
   console.log("Hello from middleware. 👋");
