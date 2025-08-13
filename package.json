@@ -2,12 +2,12 @@
   "name": "natours",
   "version": "1.0.0",
   "description": "",
-  "main": "src/server.ts",
+  "main": "src/server.js",
   "type": "module",
   "scripts": {
     "build": "npx tsc",
     "start": "tsc && node dist/server.js",
-    "dev": "nodemon src/server.ts",
+    "dev": "nodemon src/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -24,7 +24,8 @@
     "nodemon": "^3.1.9",
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
-    "typescript": "^5.7.3"
+    "tsx": "^4.20.4",
+    "typescript": "^5.9.2"
   },
   "dependencies": {
     "bcryptjs": "^3.0.2",

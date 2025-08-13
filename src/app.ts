@@ -1,6 +1,6 @@
 import express, { Application, NextFunction, Request, Response } from "express";
 import morgan from "morgan";
-import rateLimit from "express-rate-limit";
+import { rateLimit } from "express-rate-limit";
 import mongoSanitize from "express-mongo-sanitize";
 import helmet from "helmet";
 import hpp from "hpp";
@@ -26,14 +26,20 @@ const limiter = rateLimit({
 
 app.use("/api", limiter);
 
-
 app.use(express.json({ limit: "10kb" })); // Limit request body size to 10kb
 app.use(mongoSanitize()); // Sanitize data against NoSQL query injection
-app.use(hpp(
-  {
-    whitelist: ["duration", "ratingsAverage", "ratingsQuantity", "maxGroupSize", "difficulty", "price"], // Allow these fields to be passed as query parameters
-  }
-)); // Prevent HTTP Parameter Pollution
+app.use(
+  hpp({
+    whitelist: [
+      "duration",
+      "ratingsAverage",
+      "ratingsQuantity",
+      "maxGroupSize",
+      "difficulty",
+      "price",
+    ], // Allow these fields to be passed as query parameters
+  })
+); // Prevent HTTP Parameter Pollution
 
 app.use((_req: Request, _res: Response, next: NextFunction) => {
   console.log("Hello from middleware. 👋");

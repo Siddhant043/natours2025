@@ -14,13 +14,11 @@ const mongoUser = process.env.MONGO_USER || "";
 const mongoPass = process.env.MONGO_PASSWORD || "";
 const mongoDB = process.env.MONGO_DB || "natours";
 
-// If auth is needed
+// Modern Mongoose connection (remove deprecated options)
 const mongoOptions = {
-  user: mongoUser,
-  pass: mongoPass,
+  user: mongoUser || undefined, // Use undefined instead of empty string
+  pass: mongoPass || undefined,
   dbName: mongoDB,
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
 };
 
 // Connect to MongoDB
