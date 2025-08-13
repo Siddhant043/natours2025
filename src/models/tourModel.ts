@@ -79,6 +79,28 @@ const tourSchema: Schema<TourConfig> = new Schema(
     startDates: {
       type: [Date],
     },
+    startLocation: {
+      type: {
+        type:String,
+        default: "Point",
+        enum: ["Point"],
+      },
+      coordinates: [Number],
+      address:String,
+      description:String,
+    },
+    locations:[
+      {
+        type: {
+          type: String,
+          default: "Point",
+          enum: ["Point"],
+        },
+        coordinates: [Number],
+        address: String,
+        description: String,
+      }
+    ]
   },
   {
     toJSON: { virtuals: true },

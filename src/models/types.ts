@@ -17,6 +17,18 @@ export type TourConfig = {
   createdAt: Date;
   startDates: [Date];
   secretTour?: Boolean;
+  startLocation?: {
+    type: string;
+    coordinates: [Number];
+    address?: string;
+    description?: string;
+  };
+  locations: [{
+    type: string;
+    coordinates: [Number];
+    address?: string;
+    description?: string;
+  }];
 } & Document;
 
 export type UserConfig = {
