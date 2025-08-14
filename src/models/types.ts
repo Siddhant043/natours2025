@@ -31,12 +31,7 @@ export type TourConfig = {
       description?: string;
     }
   ];
-  guides?: Array<{
-    _id: string | undefined;
-    name: string | undefined;
-    email: string | undefined;
-    photo: string | undefined;
-  }>;
+  guides?: Array<string>;
 } & Document;
 
 export type UserConfig = {
