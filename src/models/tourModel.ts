@@ -1,7 +1,8 @@
 import mongoose, { Schema } from "mongoose";
-import { TourConfig } from "./types.js";
+import { TourConfig, UserConfig } from "./types.js";
 import slugify from "../utils/slugify.js";
 import validator from "validator";
+import User from "./userModel.js";
 
 const tourSchema: Schema<TourConfig> = new Schema(
   {
@@ -81,15 +82,15 @@ const tourSchema: Schema<TourConfig> = new Schema(
     },
     startLocation: {
       type: {
-        type:String,
+        type: String,
         default: "Point",
         enum: ["Point"],
       },
       coordinates: [Number],
-      address:String,
-      description:String,
+      address: String,
+      description: String,
     },
-    locations:[
+    locations: [
       {
         type: {
           type: String,
@@ -99,8 +100,9 @@ const tourSchema: Schema<TourConfig> = new Schema(
         coordinates: [Number],
         address: String,
         description: String,
-      }
-    ]
+      },
+    ],
+    guides: Array,
   },
   {
     toJSON: { virtuals: true },
@@ -116,6 +118,23 @@ tourSchema.virtual("durationWeeks").get(function () {
 // Document middleware (only runs for save and create and not for update)
 tourSchema.pre<TourConfig>("save", function (next) {
   this.slug = slugify(this.name.toLowerCase());
+  next();
+});
+
+// Embedding guides in tour
+tourSchema.pre<TourConfig>("save", async function (next) {
+  if (this.guides && this.guides.length) {
+    const guidesPromise = this.guides.map(async (guideId) => {
+      const guide: UserConfig | null = await User.findById(guideId);
+      return {
+        _id: guide?._id,
+        name: guide?.name,
+        email: guide?.email,
+        photo: guide?.photo,
+      };
+    });
+    this.guides = await Promise.all(guidesPromise);
+  }
   next();
 });
 

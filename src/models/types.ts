@@ -23,12 +23,20 @@ export type TourConfig = {
     address?: string;
     description?: string;
   };
-  locations: [{
-    type: string;
-    coordinates: [Number];
-    address?: string;
-    description?: string;
-  }];
+  locations: [
+    {
+      type: string;
+      coordinates: [Number];
+      address?: string;
+      description?: string;
+    }
+  ];
+  guides?: Array<{
+    _id: string | undefined;
+    name: string | undefined;
+    email: string | undefined;
+    photo: string | undefined;
+  }>;
 } & Document;
 
 export type UserConfig = {
