@@ -147,6 +147,15 @@ tourSchema.pre<TourConfig>(/^find/, function (next) {
   next();
 });
 
+//
+tourSchema.pre<TourConfig>(/^find/, function (next) {
+  this.populate({
+    path: "guides",
+    select: "-__v -passwordChangedAt -passwordResetToken -passwordResetExpires",
+  });
+  next();
+});
+
 // Aggregation Middleware
 tourSchema.pre(
   "aggregate",
